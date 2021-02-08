@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Person from "./components/Person";
 import "./App.css";
 
 function App() {
@@ -47,8 +48,12 @@ function App() {
   };
 
   const handleNoteChangeFilter = (event) => {
-    console.log(event.target.value);
-    setfilter(event.target.value);
+    let filter = event.target.value;
+    setfilter(filter);
+    const result = persons.filter(({ name }) => {
+      return name.toUpperCase().includes(filter.toUpperCase());
+    });
+    setPersFilt(result);
   };
 
   return (
@@ -75,9 +80,11 @@ function App() {
           <hr />
         </div>
         <div>
-          {persons.map((p, i) => {
-            return <p key={i}>{p.name + " -> " + p.phone}</p>;
-          })}
+          {personFilter.length > 0 ? (
+            <Person persons={personFilter} />
+          ) : (
+            <Person persons={persons} />
+          )}
         </div>
       </div>
     </div>
