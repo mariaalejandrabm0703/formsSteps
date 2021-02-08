@@ -11,47 +11,46 @@ function App() {
     { name: "Dan Abramov", phone: "12-43-234345" },
     { name: "Mary Poppendieck", phone: "39-23-6423122" },
   ]);
-
-  const [newName, setNewName] = useState("");
-  const [newPhone, setNewPhone] = useState("");
-  const [filter, setfilter] = useState("");
   const [personFilter, setPersFilt] = useState([]);
+  const [newValue, setNewValue] = useState({
+    newName: "",
+    newPhone: "",
+    filter: "",
+  });
 
   const handleSumit = (event) => {
     event.preventDefault();
 
     const p = persons.filter((p) => {
-      return p.name === newName;
+      return p.name === newValue.newName;
     });
 
     if (p.length === 0) {
       setPersons([
         ...persons,
         {
-          name: newName,
-          phone: newPhone,
+          name: newValue.newName,
+          phone: newValue.newPhone,
         },
       ]);
-      setNewName("");
-      setNewPhone("");
+      setNewValue({ ...newValue, newName: "", newPhone: "" });
     } else {
-      alert(`${newName} is already added to phonebook`);
-      setNewName("");
-      setNewPhone("");
+      alert(`${newValue.newName} is already added to phonebook`);
+      setNewValue({ ...newValue, newName: "", newPhone: "" });
     }
   };
 
   const handleNoteChangeName = (event) => {
-    setNewName(event.target.value);
+    setNewValue({ ...newValue, newName: event.target.value });
   };
 
   const handleNoteChangePhone = (event) => {
-    setNewPhone(event.target.value);
+    setNewValue({ ...newValue, newPhone: event.target.value });
   };
 
   const handleNoteChangeFilter = (event) => {
     let filter = event.target.value;
-    setfilter(filter);
+    setNewValue({ ...newValue, filter: filter });
     const result = persons.filter(({ name }) => {
       return name.toUpperCase().includes(filter.toUpperCase());
     });
@@ -61,13 +60,16 @@ function App() {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Filter filter={filter} handleNoteChangeFilter={handleNoteChangeFilter} />
+      <Filter
+        filter={newValue.filter}
+        handleNoteChangeFilter={handleNoteChangeFilter}
+      />
       <hr />
       <Add
         handleSumit={handleSumit}
-        newName={newName}
+        newName={newValue.newName}
         handleNoteChangeName={handleNoteChangeName}
-        newPhone={newPhone}
+        newPhone={newValue.newPhone}
         handleNoteChangePhone={handleNoteChangePhone}
       />
       <div>
