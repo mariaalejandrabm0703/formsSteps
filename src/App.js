@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Person from "./components/Person";
+import Filter from "./components/Filter";
+import Add from "./components/Add";
 import "./App.css";
 
 function App() {
@@ -59,26 +61,16 @@ function App() {
   return (
     <div>
       <h2>Phonebook</h2>
-      <h3>Filter</h3>
-      <input value={filter} onChange={handleNoteChangeFilter} />
+      <Filter filter={filter} handleNoteChangeFilter={handleNoteChangeFilter} />
       <hr />
-      <form onSubmit={handleSumit}>
-        <h2>Add new:</h2>
-        <div>
-          Name: <input value={newName} onChange={handleNoteChangeName} />
-        </div>
-        <div>
-          Phone: <input value={newPhone} onChange={handleNoteChangePhone} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <Add
+        handleSumit={handleSumit}
+        newName={newName}
+        handleNoteChangeName={handleNoteChangeName}
+        newPhone={newPhone}
+        handleNoteChangePhone={handleNoteChangePhone}
+      />
       <div>
-        <div>
-          <h2>Numbers:</h2>
-          <hr />
-        </div>
         <div>
           {personFilter.length > 0 ? (
             <Person persons={personFilter} />
