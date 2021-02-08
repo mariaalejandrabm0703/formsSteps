@@ -8,8 +8,8 @@ export const Person = ({ persons }) => {
         <hr />
       </div>
       <div>
-        {persons.map((p, i) => {
-          return <p key={i}>{p.name + " -> " + p.phone}</p>;
+        {persons.map((p) => {
+          return <p key={p.id}>{p.name + " -> " + p.number}</p>;
         })}
       </div>
     </div>

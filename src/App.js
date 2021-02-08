@@ -1,16 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Person from "./components/Person";
 import Filter from "./components/Filter";
 import Add from "./components/Add";
+import axios from "axios";
+
 import "./App.css";
 
 function App() {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", phone: "040-123456" },
-    { name: "Ada Lovelace", phone: "39-44-5323523" },
-    { name: "Dan Abramov", phone: "12-43-234345" },
-    { name: "Mary Poppendieck", phone: "39-23-6423122" },
-  ]);
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/persons")
+      .then((response) => {
+        let initialState = response.data;
+        setPersons(initialState);
+      })
+      .catch(function (reason) {
+        console.log("Manejar promesa rechazada (" + reason + ") aquí.");
+      });
+  }, []);
+
+  const [persons, setPersons] = useState([]);
   const [personFilter, setPersFilt] = useState([]);
   const [newValue, setNewValue] = useState({
     newName: "",
@@ -20,7 +29,6 @@ function App() {
 
   const handleSumit = (event) => {
     event.preventDefault();
-
     const p = persons.filter((p) => {
       return p.name === newValue.newName;
     });
@@ -30,14 +38,15 @@ function App() {
         ...persons,
         {
           name: newValue.newName,
-          phone: newValue.newPhone,
+          number: newValue.newPhone,
+          id: persons.length + 1,
         },
       ]);
-      setNewValue({ ...newValue, newName: "", newPhone: "" });
     } else {
       alert(`${newValue.newName} is already added to phonebook`);
-      setNewValue({ ...newValue, newName: "", newPhone: "" });
     }
+    setNewValue({ ...newValue, newName: "", newPhone: "" });
+    setPersFilt([]);
   };
 
   const handleNoteChangeName = (event) => {
