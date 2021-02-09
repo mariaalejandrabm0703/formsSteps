@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Person from "./components/Person";
 import Filter from "./components/Filter";
 import Add from "./components/Add";
-import { getAll, create } from "./services/persons.js";
+import { getAll, create, deleteId } from "./services/persons.js";
 
 import "./App.css";
 
@@ -36,7 +36,7 @@ function App() {
       const objet = {
         name: newValue.newName,
         number: newValue.newPhone,
-        id: persons.length + 1,
+        id: Date.now(),
       };
 
       create(objet)
@@ -70,6 +70,19 @@ function App() {
     setPersFilt(result);
   };
 
+  const deleteById = (id) => {
+    deleteId(id)
+      .then((response) => {
+        let person = persons.filter((p) => {
+          return p.id !== id;
+        });
+        setPersons(person);
+      })
+      .catch(function (reason) {
+        console.log("Manejar promesa rechazada (" + reason + ") aquí.");
+      });
+  };
+
   return (
     <>
       <h2>Phonebook</h2>
@@ -88,9 +101,9 @@ function App() {
       <div>
         <div>
           {personFilter.length > 0 ? (
-            <Person persons={personFilter} />
+            <Person persons={personFilter} deleteById={deleteById} />
           ) : (
-            <Person persons={persons} />
+            <Person persons={persons} deleteById={deleteById} />
           )}
         </div>
       </div>

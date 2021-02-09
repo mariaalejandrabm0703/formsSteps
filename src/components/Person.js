@@ -1,7 +1,6 @@
 import React from "react";
 
-export const Person = ({ persons }) => {
-  console.log(persons);
+export const Person = ({ persons, deleteById }) => {
   return (
     <div>
       <div>
@@ -10,7 +9,12 @@ export const Person = ({ persons }) => {
       </div>
       <div>
         {persons.map((p) => {
-          return <p key={p.id}>{p.name + " -> " + p.number}</p>;
+          return (
+            <>
+              <p key={p.id}>{p.name + " -> " + p.number}</p>
+              <button onClick={() => deleteById(p.id)}>Delete</button>
+            </>
+          );
         })}
       </div>
     </div>
