@@ -7,16 +7,16 @@ export const Person = ({ persons, deleteById }) => {
         <h2>Numbers:</h2>
         <hr />
       </div>
-      <div>
+      <ul>
         {persons.map((p) => {
           return (
-            <>
-              <p key={p.id}>{p.name + " -> " + p.number}</p>
+            <li key={p.id}>
+              <p>{p.name + " -> " + p.number}</p>
               <button onClick={() => deleteById(p.id)}>Delete</button>
-            </>
+            </li>
           );
         })}
-      </div>
+      </ul>
     </div>
   );
 };
