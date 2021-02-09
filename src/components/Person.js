@@ -11,7 +11,7 @@ export const Person = ({ persons, deleteById }) => {
         {persons.map((p) => {
           return (
             <li key={p.id}>
-              <p>{p.name + " -> " + p.number}</p>
+              <p>{p.id + ": " + p.name + " -> " + p.number}</p>
               <button onClick={() => deleteById(p.id)}>Delete</button>
             </li>
           );

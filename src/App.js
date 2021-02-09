@@ -2,11 +2,19 @@ import React, { useState, useEffect } from "react";
 import Person from "./components/Person";
 import Filter from "./components/Filter";
 import Add from "./components/Add";
-import { getAll, create, deleteId } from "./services/persons.js";
+import { getAll, create, deleteId, update } from "./services/persons.js";
 
 import "./App.css";
 
 function App() {
+  const [persons, setPersons] = useState([]);
+  const [personFilter, setPersFilt] = useState([]);
+  const [newValue, setNewValue] = useState({
+    newName: "",
+    newPhone: "",
+    filter: "",
+  });
+
   useEffect(() => {
     getAll()
       .then((response) => {
@@ -16,42 +24,6 @@ function App() {
         console.log("Manejar promesa rechazada (" + reason + ") aquí.");
       });
   }, []);
-
-  const [persons, setPersons] = useState([]);
-  const [personFilter, setPersFilt] = useState([]);
-  const [newValue, setNewValue] = useState({
-    newName: "",
-    newPhone: "",
-    filter: "",
-  });
-
-  const handleSumit = (event) => {
-    event.preventDefault();
-
-    const p = persons.filter((p) => {
-      return p.name === newValue.newName;
-    });
-
-    if (p.length === 0) {
-      const objet = {
-        name: newValue.newName,
-        number: newValue.newPhone,
-        id: Date.now(),
-      };
-
-      create(objet)
-        .then((response) => {
-          setPersons(persons.concat(response));
-        })
-        .catch(function (reason) {
-          console.log("Manejar promesa rechazada (" + reason + ") aquí.");
-        });
-    } else {
-      alert(`${newValue.newName} is already added to phonebook`);
-    }
-    setNewValue({ ...newValue, newName: "", newPhone: "" });
-    setPersFilt([]);
-  };
 
   const handleNoteChangeName = (event) => {
     setNewValue({ ...newValue, newName: event.target.value });
@@ -68,6 +40,49 @@ function App() {
       return name.toUpperCase().includes(filter.toUpperCase());
     });
     setPersFilt(result);
+  };
+
+  const handleSumit = (event) => {
+    event.preventDefault();
+
+    const p = persons.filter((p) => {
+      return p.name.toUpperCase() === newValue.newName.toUpperCase();
+    });
+
+    if (p.length === 0) {
+      const objet = {
+        name: newValue.newName,
+        number: newValue.newPhone,
+        id: Date.now(),
+      };
+
+      create(objet)
+        .then((response) => {
+          setPersons([...persons, response]);
+        })
+        .catch(function (reason) {
+          console.log("Manejar promesa rechazada (" + reason + ") aquí.");
+        });
+    } else {
+      const objet = {
+        name: p[0].name,
+        number: newValue.newPhone,
+        id: p[0].id,
+      };
+
+      update(objet)
+        .then(() => {
+          let person = persons.filter((p) => {
+            return p.id !== objet.id;
+          });
+          setPersons([...person, objet]);
+        })
+        .catch(function (reason) {
+          console.log("Manejar promesa rechazada (" + reason + ") aquí.");
+        });
+    }
+    setNewValue({ ...newValue, newName: "", newPhone: "" });
+    setPersFilt([]);
   };
 
   const deleteById = (id) => {
