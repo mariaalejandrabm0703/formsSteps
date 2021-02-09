@@ -1,34 +1,14 @@
 {
   "persons": [
     {
-      "name": "maria",
-      "number": "50",
-      "id": 1612839667825
+      "name": "Maria",
+      "number": "304",
+      "id": 1612885401783
     },
     {
-      "name": "oscar",
-      "number": "13",
-      "id": 1612839674634
-    },
-    {
-      "name": "valen",
-      "number": "316",
-      "id": 1612839680221
-    },
-    {
-      "name": "mari",
-      "number": "12",
-      "id": 1612839683028
-    },
-    {
-      "name": "pppp",
-      "number": "66",
-      "id": 1612840385186
-    },
-    {
-      "name": "pp",
-      "number": "11",
-      "id": 1612840424264
+      "name": "Oscar",
+      "number": "320",
+      "id": 1612885475574
     }
   ]
 }

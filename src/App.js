@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Person from "./components/Person";
 import Filter from "./components/Filter";
 import Add from "./components/Add";
+import Notification from "./components/Notification";
 import { getAll, create, deleteId, update } from "./services/persons.js";
 
 import "./App.css";
@@ -14,6 +15,7 @@ function App() {
     newPhone: "",
     filter: "",
   });
+  const [message, setMessage] = useState({ m: "", e: false });
 
   useEffect(() => {
     getAll()
@@ -21,7 +23,10 @@ function App() {
         setPersons(response);
       })
       .catch(function (reason) {
-        console.log("Manejar promesa rechazada (" + reason + ") aquí.");
+        setMessage({ m: `Error from server ${reason}`, e: true });
+        setTimeout(() => {
+          setMessage({ m: "", e: false });
+        }, 3000);
       });
   }, []);
 
@@ -59,9 +64,19 @@ function App() {
       create(objet)
         .then((response) => {
           setPersons([...persons, response]);
+          setMessage({
+            m: `Person '${objet.name}' was already create from server`,
+            e: false,
+          });
+          setTimeout(() => {
+            setMessage({ m: "", e: false });
+          }, 3000);
         })
         .catch(function (reason) {
-          console.log("Manejar promesa rechazada (" + reason + ") aquí.");
+          setMessage({ m: `Error from server ${reason}`, e: true });
+          setTimeout(() => {
+            setMessage({ m: "", e: false });
+          }, 3000);
         });
     } else {
       const objet = {
@@ -76,9 +91,19 @@ function App() {
             return p.id !== objet.id;
           });
           setPersons([...person, objet]);
+          setMessage({
+            m: `Person '${objet.name}' was already update from server`,
+            e: false,
+          });
+          setTimeout(() => {
+            setMessage({ m: "", e: false });
+          }, 3000);
         })
         .catch(function (reason) {
-          console.log("Manejar promesa rechazada (" + reason + ") aquí.");
+          setMessage({ m: `Error from server ${reason}`, e: true });
+          setTimeout(() => {
+            setMessage({ m: "", e: false });
+          }, 3000);
         });
     }
     setNewValue({ ...newValue, newName: "", newPhone: "" });
@@ -87,20 +112,28 @@ function App() {
 
   const deleteById = (id) => {
     deleteId(id)
-      .then((response) => {
+      .then(() => {
         let person = persons.filter((p) => {
           return p.id !== id;
         });
         setPersons(person);
+        setMessage({ m: `It is delete ${id}`, e: false });
+        setTimeout(() => {
+          setMessage({ m: "", e: false });
+        }, 3000);
       })
       .catch(function (reason) {
-        console.log("Manejar promesa rechazada (" + reason + ") aquí.");
+        setMessage({ m: `Error from server ${reason}`, e: true });
+        setTimeout(() => {
+          setMessage({ m: "", e: false });
+        }, 3000);
       });
   };
 
   return (
     <>
       <h2>Phonebook</h2>
+      <Notification message={message.m} error={message.e} />
       <Filter
         filter={newValue.filter}
         handleNoteChangeFilter={handleNoteChangeFilter}
