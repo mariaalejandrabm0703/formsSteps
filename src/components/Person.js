@@ -1,6 +1,7 @@
 import React from "react";
 
 export const Person = ({ persons }) => {
+  console.log(persons);
   return (
     <div>
       <div>

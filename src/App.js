@@ -2,17 +2,15 @@ import React, { useState, useEffect } from "react";
 import Person from "./components/Person";
 import Filter from "./components/Filter";
 import Add from "./components/Add";
-import axios from "axios";
+import { getAll, create } from "./services/persons.js";
 
 import "./App.css";
 
 function App() {
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/persons")
+    getAll()
       .then((response) => {
-        let initialState = response.data;
-        setPersons(initialState);
+        setPersons(response);
       })
       .catch(function (reason) {
         console.log("Manejar promesa rechazada (" + reason + ") aquí.");
@@ -29,19 +27,25 @@ function App() {
 
   const handleSumit = (event) => {
     event.preventDefault();
+
     const p = persons.filter((p) => {
       return p.name === newValue.newName;
     });
 
     if (p.length === 0) {
-      setPersons([
-        ...persons,
-        {
-          name: newValue.newName,
-          number: newValue.newPhone,
-          id: persons.length + 1,
-        },
-      ]);
+      const objet = {
+        name: newValue.newName,
+        number: newValue.newPhone,
+        id: persons.length + 1,
+      };
+
+      create(objet)
+        .then((response) => {
+          setPersons(persons.concat(response));
+        })
+        .catch(function (reason) {
+          console.log("Manejar promesa rechazada (" + reason + ") aquí.");
+        });
     } else {
       alert(`${newValue.newName} is already added to phonebook`);
     }
@@ -67,7 +71,7 @@ function App() {
   };
 
   return (
-    <div>
+    <>
       <h2>Phonebook</h2>
       <Filter
         filter={newValue.filter}
@@ -90,7 +94,7 @@ function App() {
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
